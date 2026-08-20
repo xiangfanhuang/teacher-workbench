@@ -1,0 +1,2403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教师工作台 - 初中班主任专属</title>
+    <style>
+        :root {
+            --pink-light: #FFF0F5;
+            --pink-mid: #FFE4E1;
+            --pink-accent: #FFB6C1;
+            --pink-deep: #F8A5B5;
+            --blue-light: #F0F8FF;
+            --blue-mid: #E8F4FD;
+            --blue-accent: #B0D4F1;
+            --blue-deep: #87CEEB;
+            --blue-dark: #5BA3D9;
+            --white: #FFFFFF;
+            --text-dark: #4A4A4A;
+            --text-mid: #6B6B6B;
+            --text-light: #999999;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.1);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 250px;
+            --header-height: 60px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, var(--pink-light) 0%, var(--blue-light) 50%, var(--pink-mid) 100%);
+            min-height: 100vh;
+            display: flex;
+            color: var(--text-dark);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* ========== 左侧导航栏 ========== */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--pink-light) 0%, #FFE8EC 40%, #FDE2E5 100%);
+            border-right: 2px solid rgba(255, 182, 193, 0.4);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-shadow: 2px 0 15px rgba(255, 182, 193, 0.2);
+            z-index: 10;
+            position: relative;
+        }
+        .sidebar-header {
+            padding: 22px 18px 16px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 182, 193, 0.35);
+            background: linear-gradient(135deg, #FFDDE1, #FFE4E1);
+        }
+        .sidebar-header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #D4728A;
+            letter-spacing: 1px;
+        }
+        .sidebar-header .subtitle {
+            font-size: 12px;
+            color: #C98B9B;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+        .nav-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 10px;
+            list-style: none;
+        }
+        .nav-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .nav-list::-webkit-scrollbar-thumb {
+            background: var(--pink-accent);
+            border-radius: 10px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            margin-bottom: 6px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-mid);
+            position: relative;
+            user-select: none;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.45);
+        }
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.75);
+            border-color: rgba(255, 182, 193, 0.4);
+            transform: translateX(4px);
+            box-shadow: 0 2px 10px rgba(255, 182, 193, 0.15);
+        }
+        .nav-item.active {
+            background: linear-gradient(135deg, #FFFFFF, #FFF0F5);
+            border-color: var(--pink-accent);
+            color: #D4728A;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.25);
+            transform: translateX(4px);
+        }
+        .nav-item .icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .nav-item .name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .nav-item .actions {
+            display: none;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .nav-item:hover .actions {
+            display: flex;
+        }
+        .nav-item .actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px 4px;
+            border-radius: 6px;
+            transition: var(--transition);
+            opacity: 0.7;
+        }
+        .nav-item .actions button:hover {
+            opacity: 1;
+            background: rgba(255, 182, 193, 0.25);
+        }
+        .sidebar-footer {
+            padding: 14px 16px;
+            border-top: 1px solid rgba(255, 182, 193, 0.35);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .btn-add-module {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed var(--pink-accent);
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            font-size: 14px;
+            color: #D4728A;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-add-module:hover {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: var(--pink-deep);
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* ========== 右侧内容区 ========== */
+        .main-content {
+            flex: 1;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 24px 28px;
+            background: linear-gradient(135deg, rgba(240, 248, 255, 0.7) 0%, rgba(255, 240, 245, 0.6) 100%);
+            position: relative;
+        }
+        .main-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .main-content::-webkit-scrollbar-thumb {
+            background: var(--blue-accent);
+            border-radius: 10px;
+        }
+        .content-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 0 4px;
+        }
+        .content-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #D4728A, #5BA3D9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+        }
+        .content-header .date-display {
+            font-size: 14px;
+            color: var(--text-mid);
+            background: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            font-weight: 500;
+        }
+
+        /* ========== 卡片通用 ========== */
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #D4728A;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+        }
+        .card-title .badge {
+            background: var(--pink-accent);
+            color: white;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        /* ========== 任务打勾 ========== */
+        .task-list {
+            list-style: none;
+        }
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 6px;
+            background: rgba(255, 255, 255, 0.6);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid rgba(255, 182, 193, 0.2);
+        }
+        .task-item:hover {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(255, 182, 193, 0.5);
+            transform: translateX(3px);
+        }
+        .task-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #D4728A;
+            cursor: pointer;
+            flex-shrink: 0;
+            border-radius: 4px;
+        }
+        .task-item .task-text {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text-dark);
+            transition: var(--transition);
+        }
+        .task-item .task-text.done {
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+        .task-item .task-delete {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            opacity: 0;
+            transition: var(--transition);
+            padding: 4px 6px;
+            border-radius: 6px;
+        }
+        .task-item:hover .task-delete {
+            opacity: 0.7;
+        }
+        .task-item .task-delete:hover {
+            opacity: 1;
+            background: rgba(255, 100, 100, 0.15);
+        }
+        .task-add-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .task-add-row input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 182, 193, 0.5);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.8);
+            transition: var(--transition);
+        }
+        .task-add-row input:focus {
+            border-color: var(--pink-deep);
+            box-shadow: 0 0 0 3px rgba(255, 182, 193, 0.15);
+        }
+        .task-add-row button {
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #FFB6C1, #F8A5B5);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: var(--transition);
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+        .task-add-row button:hover {
+            background: linear-gradient(135deg, #F8A5B5, #E8909F);
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* ========== 日历模块 ========== */
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .countdown-item {
+            text-align: center;
+            padding: 18px 14px;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, #FFF0F5, #FFE4E1);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+        }
+        .countdown-item .number {
+            font-size: 36px;
+            font-weight: 800;
+            color: #D4728A;
+            line-height: 1.2;
+        }
+        .countdown-item .label {
+            font-size: 12px;
+            color: var(--text-mid);
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .calendar-nav button {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 182, 193, 0.4);
+            border-radius: 8px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+        .calendar-nav button:hover {
+            background: var(--pink-mid);
+            box-shadow: 0 2px 8px rgba(255, 182, 193, 0.3);
+        }
+        .calendar-nav .month-label {
+            font-size: 16px;
+            font-weight: 700;
+            color: #D4728A;
+        }
+        .calendar-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: center;
+        }
+        .calendar-table th {
+            padding: 8px 6px;
+            color: var(--text-mid);
+            font-weight: 600;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(255, 182, 193, 0.3);
+        }
+        .calendar-table td {
+            padding: 8px 6px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            font-size: 13px;
+        }
+        .calendar-table td:hover {
+            background: rgba(255, 182, 193, 0.15);
+        }
+        .calendar-table td.weekend {
+            color: #D4728A;
+            font-weight: 600;
+        }
+        .calendar-table td.today {
+            background: linear-gradient(135deg, #FFB6C1, #F8A5B5);
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 2px 10px rgba(255, 182, 193, 0.5);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            padding: 0;
+        }
+        .calendar-table td.festival {
+            background: rgba(135, 206, 235, 0.25);
+            font-weight: 600;
+            color: #5BA3D9;
+            border-radius: 8px;
+        }
+        .calendar-table td.festival::after {
+            content: attr(data-festival);
+            display: block;
+            font-size: 9px;
+            color: #D4728A;
+            font-weight: 500;
+            margin-top: 1px;
+        }
+        .calendar-table td.has-task::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 6px;
+            height: 6px;
+            background: #D4728A;
+            border-radius: 50%;
+        }
+        .calendar-table td.empty {
+            cursor: default;
+        }
+        .calendar-table td.empty:hover {
+            background: none;
+        }
+
+        /* ========== 课程表 ========== */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .schedule-table th,
+        .schedule-table td {
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            padding: 10px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 70px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 4px;
+        }
+        .schedule-table th {
+            background: linear-gradient(135deg, #FFE4E1, #E8F4FD);
+            font-weight: 700;
+            color: #D4728A;
+            font-size: 12px;
+            cursor: default;
+        }
+        .schedule-table td:hover {
+            background: rgba(255, 182, 193, 0.2);
+            box-shadow: 0 0 0 2px rgba(255, 182, 193, 0.3);
+        }
+        .schedule-table td:focus {
+            outline: 2px solid var(--pink-accent);
+            background: #fff;
+        }
+        .schedule-table .time-col {
+            background: rgba(255, 228, 225, 0.7);
+            font-weight: 600;
+            color: #D4728A;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .schedule-add-row {
+            margin-top: 10px;
+            text-align: center;
+        }
+        .schedule-add-row button {
+            padding: 8px 18px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px dashed var(--pink-accent);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #D4728A;
+            transition: var(--transition);
+        }
+        .schedule-add-row button:hover {
+            background: var(--pink-mid);
+            box-shadow: 0 2px 10px rgba(255, 182, 193, 0.3);
+        }
+        .schedule-del-row {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            opacity: 0.6;
+            transition: var(--transition);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .schedule-del-row:hover {
+            opacity: 1;
+            background: rgba(255, 100, 100, 0.2);
+        }
+
+        /* ========== 备课助手 ========== */
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .link-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 182, 193, 0.25);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .link-card:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: var(--pink-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 182, 193, 0.25);
+        }
+        .link-card .link-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .link-card .link-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .link-card .link-name {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .link-card .link-desc {
+            font-size: 11px;
+            color: var(--text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .link-card .link-del {
+            opacity: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        .link-card:hover .link-del {
+            opacity: 0.7;
+        }
+        .link-add-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .link-add-row input {
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 182, 193, 0.5);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.8);
+            flex: 1;
+            min-width: 120px;
+        }
+        .link-add-row input:focus {
+            border-color: var(--pink-deep);
+            box-shadow: 0 0 0 3px rgba(255, 182, 193, 0.15);
+        }
+        .link-add-row button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #B0D4F1, #87CEEB);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .link-add-row button:hover {
+            background: linear-gradient(135deg, #87CEEB, #5BA3D9);
+            box-shadow: 0 4px 15px rgba(135, 206, 235, 0.5);
+        }
+
+        /* ========== 班级管理 - 分贝检测 ========== */
+        .decibel-meter {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #F0F8FF, #E8F4FD);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(135, 206, 235, 0.4);
+        }
+        .decibel-value {
+            font-size: 56px;
+            font-weight: 800;
+            color: #5BA3D9;
+            line-height: 1.2;
+            transition: var(--transition);
+        }
+        .decibel-unit {
+            font-size: 18px;
+            color: var(--text-mid);
+            font-weight: 600;
+        }
+        .decibel-bar-container {
+            width: 80%;
+            max-width: 400px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 6px;
+            margin: 14px auto;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+        .decibel-bar {
+            height: 100%;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #87CEEB, #FFB6C1, #F8A5B5);
+            transition: width 0.15s ease;
+            width: 0%;
+        }
+        .decibel-status {
+            font-size: 13px;
+            color: var(--text-mid);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        .decibel-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .decibel-buttons button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .btn-start {
+            background: linear-gradient(135deg, #87CEEB, #5BA3D9);
+            color: white;
+        }
+        .btn-start:hover {
+            box-shadow: 0 6px 20px rgba(135, 206, 235, 0.5);
+            transform: translateY(-2px);
+        }
+        .btn-stop {
+            background: linear-gradient(135deg, #FFB6C1, #F8A5B5);
+            color: white;
+        }
+        .btn-stop:hover {
+            box-shadow: 0 6px 20px rgba(255, 182, 193, 0.5);
+            transform: translateY(-2px);
+        }
+        .btn-stop:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .btn-start:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ========== 心愿瓶 ========== */
+        .wish-bottle-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-start;
+        }
+        .wish-star-display {
+            text-align: center;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #FFF8DC, #FFE4B5);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            min-width: 140px;
+        }
+        .wish-star-display .star-count {
+            font-size: 40px;
+            font-weight: 800;
+            color: #FFB800;
+        }
+        .wish-star-display .star-label {
+            font-size: 12px;
+            color: var(--text-mid);
+            letter-spacing: 0.5px;
+        }
+        .wish-bottles {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            min-width: 250px;
+        }
+        .wish-bottle {
+            flex: 1;
+            min-width: 120px;
+            max-width: 180px;
+            text-align: center;
+            padding: 16px 12px;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid rgba(255, 182, 193, 0.3);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+        .wish-bottle:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 182, 193, 0.3);
+        }
+        .wish-bottle.unlocked {
+            border-color: #FFB800;
+            background: linear-gradient(135deg, #FFF8DC, #FFFDE8);
+            box-shadow: 0 4px 20px rgba(255, 184, 0, 0.3);
+        }
+        .wish-bottle .bottle-emoji {
+            font-size: 36px;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .wish-bottle .wish-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dark);
+            word-break: break-all;
+        }
+        .wish-bottle .wish-progress {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+        .wish-bottle .wish-progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 3px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+        .wish-bottle .wish-progress-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #FFB800, #FFD700);
+            transition: width 0.5s ease;
+        }
+        .wish-bottle .unlock-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #FFB800;
+            color: white;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(255, 184, 0, 0.5);
+        }
+        .btn-add-star {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #FFB800, #FFD700);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255, 184, 0, 0.3);
+            margin-top: 8px;
+        }
+        .btn-add-star:hover {
+            box-shadow: 0 6px 20px rgba(255, 184, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* ========== 学生信息 ========== */
+        .student-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+        }
+        .student-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 182, 193, 0.25);
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+        }
+        .student-tag:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: var(--pink-accent);
+            box-shadow: 0 2px 8px rgba(255, 182, 193, 0.2);
+        }
+        .student-tag .st-index {
+            color: var(--text-light);
+            font-size: 10px;
+            min-width: 20px;
+        }
+        .student-tag .st-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        .student-tag .st-del {
+            opacity: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 11px;
+            transition: var(--transition);
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .student-tag:hover .st-del {
+            opacity: 0.7;
+        }
+        .student-tag .st-del:hover {
+            opacity: 1;
+            background: rgba(255, 100, 100, 0.2);
+        }
+        .student-add-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .student-add-row input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 182, 193, 0.5);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        .student-add-row input:focus {
+            border-color: var(--pink-deep);
+            box-shadow: 0 0 0 3px rgba(255, 182, 193, 0.15);
+        }
+        .student-add-row button {
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #B0D4F1, #87CEEB);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .student-add-row button:hover {
+            background: linear-gradient(135deg, #87CEEB, #5BA3D9);
+            box-shadow: 0 4px 15px rgba(135, 206, 235, 0.5);
+        }
+
+        /* ========== 沟通记录 ========== */
+        .comm-record {
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--blue-accent);
+            margin-bottom: 8px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .comm-record:hover {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 8px rgba(135, 206, 235, 0.2);
+        }
+        .comm-record .comm-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-mid);
+            margin-bottom: 4px;
+        }
+        .comm-record .comm-student {
+            font-weight: 700;
+            color: #D4728A;
+            font-size: 13px;
+        }
+        .comm-record .comm-content {
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+        .comm-record .comm-del {
+            opacity: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            transition: var(--transition);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .comm-record:hover .comm-del {
+            opacity: 0.7;
+        }
+        .comm-record .comm-del:hover {
+            opacity: 1;
+            background: rgba(255, 100, 100, 0.2);
+        }
+
+        /* ========== 荣誉登记 ========== */
+        .honor-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            transition: var(--transition);
+        }
+        .honor-item:hover {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(255, 215, 0, 0.2);
+        }
+        .honor-item .honor-icon {
+            font-size: 28px;
+        }
+        .honor-item .honor-info {
+            flex: 1;
+        }
+        .honor-item .honor-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: #D4728A;
+        }
+        .honor-item .honor-desc {
+            font-size: 12px;
+            color: var(--text-mid);
+        }
+        .honor-item .honor-del {
+            opacity: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: var(--transition);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .honor-item:hover .honor-del {
+            opacity: 0.7;
+        }
+        .honor-item .honor-del:hover {
+            opacity: 1;
+            background: rgba(255, 100, 100, 0.2);
+        }
+
+        /* ========== 编辑弹窗 ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-box {
+            background: white;
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            animation: slideUp 0.25s ease;
+            border: 1px solid rgba(255, 182, 193, 0.3);
+        }
+        .modal-box h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #D4728A;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 182, 193, 0.5);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 16px;
+            transition: var(--transition);
+        }
+        .modal-box input:focus {
+            border-color: var(--pink-deep);
+            box-shadow: 0 0 0 3px rgba(255, 182, 193, 0.15);
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .modal-buttons .btn-confirm {
+            background: linear-gradient(135deg, #FFB6C1, #F8A5B5);
+            color: white;
+        }
+        .modal-buttons .btn-confirm:hover {
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.4);
+            transform: translateY(-1px);
+        }
+        .modal-buttons .btn-cancel {
+            background: #f0f0f0;
+            color: var(--text-mid);
+        }
+        .modal-buttons .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 200px;
+            }
+            .main-content {
+                padding: 16px;
+            }
+            .countdown-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .link-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+        }
+        @media (max-width: 600px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                min-width: 100%;
+                height: auto;
+                max-height: 200px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                border-right: none;
+                border-bottom: 2px solid rgba(255, 182, 193, 0.4);
+            }
+            .sidebar-header {
+                display: none;
+            }
+            .nav-list {
+                display: flex;
+                flex-wrap: wrap;
+                padding: 8px;
+                gap: 4px;
+            }
+            .nav-item {
+                padding: 8px 10px;
+                font-size: 12px;
+                margin-bottom: 0;
+            }
+            .sidebar-footer {
+                padding: 8px;
+            }
+            .main-content {
+                height: auto;
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 左侧导航栏 -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1>🌸 教师工作台</h1>
+            <div class="subtitle">初中班主任专属</div>
+        </div>
+        <ul class="nav-list" id="navList"></ul>
+        <div class="sidebar-footer">
+            <button class="btn-add-module" id="btnAddModule">➕ 新增功能模块</button>
+        </div>
+    </aside>
+
+    <!-- 右侧内容区 -->
+    <main class="main-content" id="mainContent">
+        <div class="content-header">
+            <h2 id="contentTitle">📅 学期日历</h2>
+            <div class="date-display" id="dateDisplay"></div>
+        </div>
+        <div id="contentBody"></div>
+    </main>
+
+    <!-- 弹窗 -->
+    <div class="modal-overlay" id="modalOverlay" style="display:none;">
+        <div class="modal-box">
+            <h3 id="modalTitle">编辑</h3>
+            <input type="text" id="modalInput" placeholder="请输入名称...">
+            <div class="modal-buttons">
+                <button class="btn-cancel" id="modalCancel">取消</button>
+                <button class="btn-confirm" id="modalConfirm">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =========================================
+        // 数据存储与管理
+        // =========================================
+        const STORAGE_KEY = 'teacherWorkbenchData';
+        const DEFAULT_MODULES = [
+            { id: 'calendar', name: '学期日历', icon: '📅' },
+            { id: 'lesson', name: '备课助手', icon: '📝' },
+            { id: 'class', name: '班级管理', icon: '🏫' },
+            { id: 'homework', name: '作业提效', icon: '📚' },
+            { id: 'students', name: '学生信息', icon: '👥' },
+            { id: 'communication', name: '家校沟通', icon: '💬' },
+            { id: 'honor', name: '荣誉登记', icon: '🏆' },
+        ];
+
+        const DEFAULT_STUDENT_NAMES = [
+            '王梓涵', '李雨桐', '张浩然', '刘思远', '陈雨萱', '赵子墨', '孙艺宁', '周天宇',
+            '吴梦洁', '郑子涵', '林雨欣', '郭子睿', '唐雅静', '曹俊杰', '许文博', '邓紫琪',
+            '冯子轩', '蒋欣怡', '沈佳宜', '韩天乐', '杨雨婷', '朱子豪', '秦可欣', '何俊熙',
+            '罗诗涵', '高梓萱', '谢雨泽', '宋佳琪', '唐艺昕', '董子健', '梁静怡', '苏宇航',
+            '卢佳宁', '蒋梦瑶', '蔡文轩', '余思涵', '潘俊杰', '杜雨萌', '戴子航', '夏雨桐',
+            '钟子墨', '汪可欣', '田雨泽', '任佳慧', '范子豪', '方雨晴'
+        ];
+
+        function getDefaultData() {
+            return {
+                modules: JSON.parse(JSON.stringify(DEFAULT_MODULES)),
+                activeModule: 'calendar',
+                tasks: {
+                    calendar: [
+                        { id: 't1', text: '查看今日课程安排', done: false },
+                        { id: 't2', text: '检查明日备课进度', done: false },
+                        { id: 't3', text: '核对班级通知事项', done: false },
+                    ],
+                    lesson: [
+                        { id: 't1', text: '完成明日备课教案', done: false },
+                        { id: 't2', text: '准备课堂互动环节', done: false },
+                        { id: 't3', text: '查看公开课资源', done: false },
+                    ],
+                    class: [
+                        { id: 't1', text: '早读纪律巡查', done: false },
+                        { id: 't2', text: '检查班级卫生', done: false },
+                        { id: 't3', text: '关注学生课堂表现', done: false },
+                    ],
+                    homework: [
+                        { id: 't1', text: '批改今日作业', done: false },
+                        { id: 't2', text: '布置明日作业', done: false },
+                        { id: 't3', text: '统计作业完成情况', done: false },
+                    ],
+                    students: [
+                        { id: 't1', text: '更新学生出勤记录', done: false },
+                        { id: 't2', text: '关注重点关注学生', done: false },
+                    ],
+                    communication: [
+                        { id: 't1', text: '回复家长消息', done: false },
+                        { id: 't2', text: '沟通学生近期表现', done: false },
+                    ],
+                    honor: [
+                        { id: 't1', text: '记录本周班级荣誉', done: false },
+                        { id: 't2', text: '整理学生获奖情况', done: false },
+                    ],
+                },
+                students: DEFAULT_STUDENT_NAMES.map((name, i) => ({ id: 's' + (i + 1), name })),
+                links: [
+                    { id: 'l1', name: '国家中小学智慧教育平台', url: 'https://basic.smartedu.cn/',
+                    desc: '官方教育资源', icon: '🏛️' },
+                    { id: 'l2', name: '学科网', url: 'https://www.zxxk.com/', desc: '备课资料下载', icon: '📖' },
+                    { id: 'l3', name: '百度文库', url: 'https://wenku.baidu.com/', desc: '文档资源搜索', icon: '📄' },
+                    { id: 'l4', name: 'B站公开课', url: 'https://www.bilibili.com/', desc: '视频公开课', icon: '🎬' },
+                    { id: 'l5', name: '中国公开课', url: 'https://open.163.com/', desc: '网易公开课', icon: '🎓' },
+                    { id: 'l6', name: '一师一优课', url: 'https://1s1k.eduyun.cn/', desc: '优质课资源', icon: '🏆' },
+                ],
+                schedule: [
+                    { time: '7:30-8:00', mon: '早读', tue: '早读', wed: '早读', thu: '早读', fri: '早读' },
+                    { time: '8:00-8:45', mon: '语文', tue: '数学', wed: '英语', thu: '物理', fri: '化学' },
+                    { time: '8:55-9:40', mon: '数学', tue: '英语', wed: '语文', thu: '化学', fri: '物理' },
+                    { time: '10:00-10:45', mon: '英语', tue: '语文', wed: '数学', thu: '生物', fri: '地理' },
+                    { time: '10:55-11:40', mon: '物理', tue: '化学', wed: '体育', thu: '数学', fri: '英语' },
+                    { time: '14:00-14:45', mon: '地理', tue: '生物', wed: '物理', thu: '英语', fri: '数学' },
+                    { time: '14:55-15:40', mon: '历史', tue: '体育', wed: '化学', thu: '语文', fri: '班会' },
+                    { time: '15:50-16:35', mon: '自习', tue: '自习', wed: '自习', thu: '自习', fri: '自习' },
+                ],
+                commRecords: [
+                    { id: 'c1', student: '王梓涵', date: '2026-08-18', content: '家长反馈孩子最近学习状态良好，作业完成及时。' },
+                    { id: 'c2', student: '李雨桐', date: '2026-08-19', content: '与家长沟通数学成绩提升方案，建议加强练习。' },
+                    { id: 'c3', student: '张浩然', date: '2026-08-20', content: '家长会面谈，了解学生在家学习习惯。' },
+                ],
+                honors: [
+                    { id: 'h1', name: '七年级优秀班集体', desc: '2026年5月，学校评选', icon: '🏅' },
+                    { id: 'h2', name: '校园文化节一等奖', desc: '2026年4月，班级合唱比赛', icon: '🎵' },
+                    { id: 'h3', name: '卫生先进班级', desc: '2026年3月，连续4周获得', icon: '✨' },
+                ],
+                stars: 23,
+                wishes: [
+                    { id: 'w1', name: '班级电影日', target: 30, icon: '🎬' },
+                    { id: 'w2', name: '户外活动课', target: 50, icon: '🌳' },
+                    { id: 'w3', name: '美食分享会', target: 70, icon: '🍰' },
+                    { id: 'w4', name: '免作业券', target: 100, icon: '🎫' },
+                ],
+                schoolStartDate: '2026-09-01',
+                decibelHistory: [],
+            };
+        }
+
+        let appData = loadData();
+
+        function loadData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    // 合并默认值，确保新字段存在
+                    const def = getDefaultData();
+                    for (const key in def) {
+                        if (!(key in parsed)) parsed[key] = def[key];
+                    }
+                    // 确保模块存在
+                    if (!parsed.modules || parsed.modules.length < DEFAULT_MODULES.length) {
+                        parsed.modules = JSON.parse(JSON.stringify(DEFAULT_MODULES));
+                    }
+                    return parsed;
+                }
+            } catch (e) { console.warn('数据加载失败，使用默认数据', e); }
+            return getDefaultData();
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+            } catch (e) { console.warn('数据保存失败', e); }
+        }
+
+        // =========================================
+        // 工具函数
+        // =========================================
+        function generateId() {
+            return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+        }
+
+        function formatDateCN(date) {
+            const y = date.getFullYear();
+            const m = date.getMonth() + 1;
+            const d = date.getDate();
+            const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+            return `${y}年${m}月${d}日 星期${weekdays[date.getDay()]}`;
+        }
+
+        function getFestivals(year, month) {
+            const festivals = {};
+            // 固定节日
+            if (month === 1 && year === 2026) festivals[1] = '元旦';
+            if (month === 1 && year === 2026) festivals[28] = '除夕';
+            if (month === 2 && year === 2026) festivals[17] = '春节';
+            if (month === 4 && year === 2026) festivals[5] = '清明';
+            if (month === 5 && year === 2026) festivals[1] = '劳动节';
+            if (month === 6 && year === 2026) festivals[19] = '端午';
+            if (month === 9 && year === 2026) { festivals[10] = '教师节';
+                festivals[25] = '中秋节'; }
+            if (month === 10 && year === 2026) { festivals[1] = '国庆节';
+                festivals[2] = '国庆假';
+                festivals[3] = '国庆假';
+                festivals[4] = '国庆假';
+                festivals[5] = '国庆假';
+                festivals[6] = '国庆假';
+                festivals[7] = '国庆假'; }
+            if (month === 12 && year === 2026) festivals[25] = '圣诞节';
+            return festivals;
+        }
+
+        function getDaysUntil(targetDateStr) {
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            const target = new Date(targetDateStr);
+            target.setHours(0, 0, 0, 0);
+            const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+            return diff;
+        }
+
+        // =========================================
+        // 渲染 - 侧边栏
+        // =========================================
+        function renderSidebar() {
+            const navList = document.getElementById('navList');
+            navList.innerHTML = '';
+            appData.modules.forEach(mod => {
+                const li = document.createElement('li');
+                li.className = 'nav-item' + (appData.activeModule === mod.id ? ' active' : '');
+                li.dataset.id = mod.id;
+                li.innerHTML = `
+                    <span class="icon">${mod.icon || '📌'}</span>
+                    <span class="name">${mod.name}</span>
+                    <span class="actions">
+                        <button class="btn-edit-module" title="编辑名称" data-id="${mod.id}">✏️</button>
+                        <button class="btn-del-module" title="删除模块" data-id="${mod.id}">🗑️</button>
+                    </span>
+                `;
+                li.addEventListener('click', (e) => {
+                    if (e.target.closest('.actions')) return;
+                    appData.activeModule = mod.id;
+                    saveData();
+                    renderAll();
+                });
+                navList.appendChild(li);
+            });
+
+            // 绑定编辑和删除
+            navList.querySelectorAll('.btn-edit-module').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = btn.dataset.id;
+                    openModal('编辑模块名称', '请输入新的模块名称...', (name) => {
+                        const mod = appData.modules.find(m => m.id === id);
+                        if (mod && name.trim()) { mod.name = name.trim();
+                            saveData();
+                            renderAll(); }
+                    });
+                });
+            });
+            navList.querySelectorAll('.btn-del-module').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = btn.dataset.id;
+                    const mod = appData.modules.find(m => m.id === id);
+                    if (!mod) return;
+                    if (confirm(`确定要删除「${mod.name}」模块吗？`)) {
+                        appData.modules = appData.modules.filter(m => m.id !== id);
+                        delete appData.tasks[id];
+                        if (appData.activeModule === id) {
+                            appData.activeModule = appData.modules.length > 0 ? appData.modules[0].id : '';
+                        }
+                        saveData();
+                        renderAll();
+                    }
+                });
+            });
+        }
+
+        // =========================================
+        // 弹窗管理
+        // =========================================
+        let modalCallback = null;
+
+        function openModal(title, placeholder, callback) {
+            document.getElementById('modalTitle').textContent = title;
+            const input = document.getElementById('modalInput');
+            input.placeholder = placeholder;
+            input.value = '';
+            document.getElementById('modalOverlay').style.display = 'flex';
+            modalCallback = callback;
+            input.focus();
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+            modalCallback = null;
+        }
+
+        document.getElementById('modalCancel').addEventListener('click', closeModal);
+        document.getElementById('modalOverlay').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal();
+        });
+        document.getElementById('modalConfirm').addEventListener('click', () => {
+            const val = document.getElementById('modalInput').value.trim();
+            if (val && modalCallback) modalCallback(val);
+            closeModal();
+        });
+        document.getElementById('modalInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const val = document.getElementById('modalInput').value.trim();
+                if (val && modalCallback) modalCallback(val);
+                closeModal();
+            }
+        });
+
+        // =========================================
+        // 新增模块
+        // =========================================
+        document.getElementById('btnAddModule').addEventListener('click', () => {
+            openModal('新增功能模块', '请输入模块名称...', (name) => {
+                const id = generateId();
+                appData.modules.push({ id, name, icon: '📌' });
+                appData.tasks[id] = [];
+                appData.activeModule = id;
+                saveData();
+                renderAll();
+            });
+        });
+
+        // =========================================
+        // 渲染 - 主内容
+        // =========================================
+        function renderAll() {
+            renderSidebar();
+            renderContent();
+            updateDateDisplay();
+        }
+
+        function updateDateDisplay() {
+            document.getElementById('dateDisplay').textContent = formatDateCN(new Date());
+        }
+
+        function renderContent() {
+            const activeMod = appData.modules.find(m => m.id === appData.activeModule);
+            if (!activeMod) {
+                document.getElementById('contentTitle').textContent = '📌 请选择模块';
+                document.getElementById('contentBody').innerHTML =
+                    '<div class="card"><p style="text-align:center;color:#999;">请从左侧选择功能模块</p></div>';
+                return;
+            }
+            document.getElementById('contentTitle').textContent = `${activeMod.icon} ${activeMod.name}`;
+            const body = document.getElementById('contentBody');
+
+            switch (activeMod.id) {
+                case 'calendar':
+                    body.innerHTML = renderCalendarModule();
+                    break;
+                case 'lesson':
+                    body.innerHTML = renderLessonModule();
+                    break;
+                case 'class':
+                    body.innerHTML = renderClassModule();
+                    break;
+                case 'homework':
+                    body.innerHTML = renderHomeworkModule();
+                    break;
+                case 'students':
+                    body.innerHTML = renderStudentsModule();
+                    break;
+                case 'communication':
+                    body.innerHTML = renderCommunicationModule();
+                    break;
+                case 'honor':
+                    body.innerHTML = renderHonorModule();
+                    break;
+                default:
+                    body.innerHTML =
+                        `<div class="card"><div class="card-title">📌 ${activeMod.name}</div><p style="color:#999;">自定义模块，暂无特殊功能。</p></div>`;
+            }
+
+            // 为自定义模块也渲染任务列表
+            if (!['calendar', 'lesson', 'class', 'homework', 'students', 'communication', 'honor'].includes(
+                    activeMod.id)) {
+                const tasksHtml = renderTaskList(activeMod.id, '📋 今日任务');
+                body.innerHTML = tasksHtml + body.innerHTML;
+            }
+
+            // 绑定任务相关事件
+            bindTaskEvents(activeMod.id);
+            // 绑定模块特定事件
+            if (activeMod.id === 'calendar') bindCalendarEvents();
+            if (activeMod.id === 'lesson') bindLessonEvents();
+            if (activeMod.id === 'class') bindClassEvents();
+            if (activeMod.id === 'homework') bindHomeworkEvents();
+            if (activeMod.id === 'students') bindStudentsEvents();
+            if (activeMod.id === 'communication') bindCommEvents();
+            if (activeMod.id === 'honor') bindHonorEvents();
+        }
+
+        // =========================================
+        // 通用任务列表渲染
+        // =========================================
+        function renderTaskList(moduleId, title = '📋 今日待办') {
+            const tasks = appData.tasks[moduleId] || [];
+            let html = `
+                <div class="card">
+                    <div class="card-title">${title} <span class="badge">${tasks.filter(t=>t.done).length}/${tasks.length}</span></div>
+                    <ul class="task-list" id="taskList_${moduleId}">
+            `;
+            tasks.forEach(task => {
+                html += `
+                    <li class="task-item" data-task-id="${task.id}">
+                        <input type="checkbox" ${task.done ? 'checked' : ''} data-task-id="${task.id}">
+                        <span class="task-text ${task.done ? 'done' : ''}">${task.text}</span>
+                        <button class="task-delete" data-task-id="${task.id}" title="删除任务">✕</button>
+                    </li>
+                `;
+            });
+            html += `</ul>
+                <div class="task-add-row">
+                    <input type="text" id="taskInput_${moduleId}" placeholder="添加新任务..." maxlength="100">
+                    <button id="taskAddBtn_${moduleId}">添加</button>
+                </div>
+            </div>`;
+            return html;
+        }
+
+        function bindTaskEvents(moduleId) {
+            const list = document.getElementById(`taskList_${moduleId}`);
+            if (!list) return;
+
+            // 勾选
+            list.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.addEventListener('change', (e) => {
+                    const taskId = cb.dataset.taskId;
+                    const tasks = appData.tasks[moduleId] || [];
+                    const task = tasks.find(t => t.id === taskId);
+                    if (task) { task.done = cb.checked;
+                        saveData();
+                        renderContent(); }
+                });
+            });
+            // 删除
+            list.querySelectorAll('.task-delete').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const taskId = btn.dataset.taskId;
+                    appData.tasks[moduleId] = (appData.tasks[moduleId] || []).filter(t => t.id !==
+                        taskId);
+                    saveData();
+                    renderContent();
+                });
+            });
+            // 添加
+            const addBtn = document.getElementById(`taskAddBtn_${moduleId}`);
+            const input = document.getElementById(`taskInput_${moduleId}`);
+            if (addBtn && input) {
+                const addTask = () => {
+                    const val = input.value.trim();
+                    if (val) {
+                        if (!appData.tasks[moduleId]) appData.tasks[moduleId] = [];
+                        appData.tasks[moduleId].push({ id: generateId(), text: val, done: false });
+                        saveData();
+                        renderContent();
+                    }
+                };
+                addBtn.addEventListener('click', addTask);
+                input.addEventListener('keydown', (e) => { if (e.key === 'Enter') addTask(); });
+            }
+            // 点击任务文本切换
+            list.querySelectorAll('.task-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if (e.target.closest('.task-delete') || e.target.type === 'checkbox') return;
+                    const cb = item.querySelector('input[type="checkbox"]');
+                    if (cb) { cb.checked = !cb.checked;
+                        cb.dispatchEvent(new Event('change')); }
+                });
+            });
+        }
+
+        // =========================================
+        // 学期日历模块
+        // =========================================
+        let calendarViewDate = new Date();
+        let editingScheduleCell = null;
+
+        function renderCalendarModule() {
+            const today = new Date();
+            const daysUntil = getDaysUntil(appData.schoolStartDate || '2026-09-01');
+            const daysText = daysUntil > 0 ? `${daysUntil} 天` : daysUntil === 0 ? '今天开学！' : `已开学 ${Math.abs(daysUntil)} 天`;
+
+            const tasksHtml = renderTaskList('calendar', '📋 今日待办');
+
+            // 倒计时
+            const countdownHtml = `
+                <div class="card">
+                    <div class="card-title">⏰ 教师续命表</div>
+                    <div class="countdown-grid">
+                        <div class="countdown-item">
+                            <div class="number">${daysText}</div>
+                            <div class="label">距离下学期开学</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="number">${getDaysUntil('2026-10-01')} 天</div>
+                            <div class="label">距离国庆节</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="number">${getDaysUntil('2026-09-10')} 天</div>
+                            <div class="label">距离教师节</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="number">${getDaysUntil('2027-01-01')} 天</div>
+                            <div class="label">距离元旦</div>
+                        </div>
+                    </div>
+                    <div style="margin-top:12px;font-size:12px;color:#999;">
+                        📅 开学日期：<span id="schoolDateDisplay">${appData.schoolStartDate || '2026-09-01'}</span>
+                        <button id="editSchoolDate" style="margin-left:8px;padding:4px 10px;background:none;border:1px solid #FFB6C1;border-radius:6px;cursor:pointer;font-size:12px;color:#D4728A;">✏️ 修改</button>
+                    </div>
+                </div>
+            `;
+
+            // 月历
+            const calHtml = renderMonthCalendar();
+
+            // 课程表
+            const scheduleHtml = renderScheduleTable();
+
+            return countdownHtml + calHtml + scheduleHtml + tasksHtml;
+        }
+
+        function renderMonthCalendar() {
+            const year = calendarViewDate.getFullYear();
+            const month = calendarViewDate.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            const festivals = getFestivals(year, month + 1);
+
+            let html = `
+                <div class="card">
+                    <div class="card-title">📅 ${year}年${month+1}月 校历</div>
+                    <div class="calendar-nav">
+                        <button id="calPrev">◀ 上月</button>
+                        <span class="month-label">${year}年 ${month+1}月</span>
+                        <button id="calNext">下月 ▶</button>
+                    </div>
+                    <table class="calendar-table">
+                        <thead><tr><th>日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th></tr></thead>
+                        <tbody>
+            `;
+            let day = 1;
+            for (let row = 0; row < 6; row++) {
+                html += '<tr>';
+                for (let col = 0; col < 7; col++) {
+                    if (row === 0 && col < firstDay) {
+                        html += '<td class="empty"></td>';
+                    } else if (day > daysInMonth) {
+                        html += '<td class="empty"></td>';
+                    } else {
+                        const isWeekend = col === 0 || col === 6;
+                        const isToday = today.getFullYear() === year && today.getMonth() === month && today
+                            .getDate() === day;
+                        const isFestival = festivals[day] !== undefined;
+                        let cls = isWeekend ? 'weekend' : '';
+                        if (isToday) cls += ' today';
+                        if (isFestival) cls += ' festival';
+                        const festivalAttr = isFestival ? `data-festival="${festivals[day]}"` : '';
+                        html +=
+                            `<td class="${cls}" ${festivalAttr} data-day="${day}">${day}${isFestival ? '<br><span style="font-size:9px;color:#D4728A;">' + festivals[day] + '</span>' : ''}</td>`;
+                        day++;
+                    }
+                }
+                html += '</tr>';
+                if (day > daysInMonth) break;
+            }
+            html += `</tbody></table>
+                <p style="font-size:11px;color:#999;margin-top:8px;">💡 点击日期可查看详情 | 粉色标记为周末 | 蓝色标记为节日</p>
+            </div>`;
+            return html;
+        }
+
+        function renderScheduleTable() {
+            let html = `
+                <div class="card">
+                    <div class="card-title">📚 课程表 <span class="badge">可编辑</span></div>
+                    <table class="schedule-table" id="scheduleTable">
+                        <thead>
+                            <tr>
+                                <th>时间</th><th>周一</th><th>周二</th><th>周三</th><th>周四</th><th>周五</th><th style="width:40px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            appData.schedule.forEach((row, idx) => {
+                html += `<tr data-idx="${idx}">
+                    <td class="time-col" contenteditable="true" data-field="time">${row.time}</td>
+                    <td contenteditable="true" data-field="mon">${row.mon}</td>
+                    <td contenteditable="true" data-field="tue">${row.tue}</td>
+                    <td contenteditable="true" data-field="wed">${row.wed}</td>
+                    <td contenteditable="true" data-field="thu">${row.thu}</td>
+                    <td contenteditable="true" data-field="fri">${row.fri}</td>
+                    <td><button class="schedule-del-row" data-idx="${idx}" title="删除此行">✕</button></td>
+                </tr>`;
+            });
+            html += `</tbody></table>
+                <div class="schedule-add-row">
+                    <button id="scheduleAddRow">➕ 添加行</button>
+                </div>
+                <p style="font-size:11px;color:#999;margin-top:8px;">💡 点击单元格直接编辑课程和时间</p>
+            </div>`;
+            return html;
+        }
+
+        function bindCalendarEvents() {
+            // 月历切换
+            const prevBtn = document.getElementById('calPrev');
+            const nextBtn = document.getElementById('calNext');
+            if (prevBtn) prevBtn.addEventListener('click', () => { calendarViewDate.setMonth(calendarViewDate
+                    .getMonth() - 1);
+                renderContent(); });
+            if (nextBtn) nextBtn.addEventListener('click', () => { calendarViewDate.setMonth(calendarViewDate
+                    .getMonth() + 1);
+                renderContent(); });
+
+            // 修改开学日期
+            const editDateBtn = document.getElementById('editSchoolDate');
+            if (editDateBtn) {
+                editDateBtn.addEventListener('click', () => {
+                    openModal('修改开学日期', '格式：YYYY-MM-DD', (val) => {
+                        if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
+                            appData.schoolStartDate = val;
+                            saveData();
+                            renderContent();
+                        } else {
+                            alert('请输入正确格式：YYYY-MM-DD');
+                        }
+                    });
+                });
+            }
+
+            // 课程表编辑
+            const table = document.getElementById('scheduleTable');
+            if (table) {
+                table.querySelectorAll('td[contenteditable]').forEach(td => {
+                    td.addEventListener('blur', () => {
+                        const tr = td.closest('tr');
+                        const idx = parseInt(tr.dataset.idx);
+                        const field = td.dataset.field;
+                        const val = td.textContent.trim();
+                        if (appData.schedule[idx]) {
+                            appData.schedule[idx][field] = val;
+                            saveData();
+                        }
+                    });
+                    td.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') { e.preventDefault();
+                            td.blur(); }
+                    });
+                });
+                // 删除行
+                table.querySelectorAll('.schedule-del-row').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const idx = parseInt(btn.dataset.idx);
+                        if (appData.schedule.length > 1) {
+                            appData.schedule.splice(idx, 1);
+                            saveData();
+                            renderContent();
+                        } else {
+                            alert('至少保留一行课程表');
+                        }
+                    });
+                });
+            }
+            // 添加行
+            const addRowBtn = document.getElementById('scheduleAddRow');
+            if (addRowBtn) {
+                addRowBtn.addEventListener('click', () => {
+                    appData.schedule.push({ time: '新时间段', mon: '', tue: '', wed: '', thu: '', fri: '' });
+                    saveData();
+                    renderContent();
+                });
+            }
+            // 月历点击
+            const calTable = document.querySelector('.calendar-table');
+            if (calTable) {
+                calTable.querySelectorAll('td:not(.empty)').forEach(td => {
+                    td.addEventListener('click', () => {
+                        const day = td.dataset.day;
+                        if (day) {
+                            const year = calendarViewDate.getFullYear();
+                            const month = calendarViewDate.getMonth() + 1;
+                            alert(`${year}年${month}月${day}日\n${td.dataset.festival ? '🎉 ' + td.dataset.festival : '📅 正常工作日'}`);
+                        }
+                    });
+                });
+            }
+        }
+
+        // =========================================
+        // 备课助手模块
+        // =========================================
+        function renderLessonModule() {
+            const tasksHtml = renderTaskList('lesson', '📋 备课待办');
+            let linksHtml = `
+                <div class="card">
+                    <div class="card-title">🔗 教学资源链接 <span class="badge">可添加</span></div>
+                    <div class="link-grid" id="linkGrid">
+            `;
+            appData.links.forEach(link => {
+                linksHtml += `
+                    <div class="link-card" data-link-id="${link.id}">
+                        <span class="link-icon">${link.icon || '🔗'}</span>
+                        <span class="link-info">
+                            <span class="link-name">${link.name}</span><br>
+                            <span class="link-desc">${link.desc || ''}</span>
+                        </span>
+                        <button class="link-del" data-link-id="${link.id}" title="删除">✕</button>
+                    </div>
+                `;
+            });
+            linksHtml += `</div>
+                <div class="link-add-row">
+                    <input type="text" id="linkNameInput" placeholder="链接名称" maxlength="30">
+                    <input type="text" id="linkUrlInput" placeholder="https://..." maxlength="200">
+                    <input type="text" id="linkDescInput" placeholder="描述（可选）" maxlength="50">
+                    <button id="linkAddBtn">➕ 添加链接</button>
+                </div>
+                <p style="font-size:11px;color:#999;margin-top:8px;">💡 点击链接卡片即可打开网页</p>
+            </div>`;
+            return linksHtml + tasksHtml;
+        }
+
+        function bindLessonEvents() {
+            // 打开链接
+            const grid = document.getElementById('linkGrid');
+            if (grid) {
+                grid.querySelectorAll('.link-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        if (e.target.closest('.link-del')) return;
+                        const linkId = card.dataset.linkId;
+                        const link = appData.links.find(l => l.id === linkId);
+                        if (link) window.open(link.url, '_blank');
+                    });
+                });
+                // 删除链接
+                grid.querySelectorAll('.link-del').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const linkId = btn.dataset.linkId;
+                        appData.links = appData.links.filter(l => l.id !== linkId);
+                        saveData();
+                        renderContent();
+                    });
+                });
+            }
+            // 添加链接
+            const addBtn = document.getElementById('linkAddBtn');
+            if (addBtn) {
+                const addLink = () => {
+                    const name = document.getElementById('linkNameInput').value.trim();
+                    const url = document.getElementById('linkUrlInput').value.trim();
+                    const desc = document.getElementById('linkDescInput').value.trim();
+                    if (name && url) {
+                        appData.links.push({ id: generateId(), name, url, desc, icon: '🔗' });
+                        saveData();
+                        renderContent();
+                    } else {
+                        alert('请填写链接名称和URL');
+                    }
+                };
+                addBtn.addEventListener('click', addLink);
+                document.getElementById('linkNameInput').addEventListener('keydown', (e) => { if (e.key ===
+                        'Enter') addLink(); });
+                document.getElementById('linkUrlInput').addEventListener('keydown', (e) => { if (e.key ===
+                        'Enter') addLink(); });
+                document.getElementById('linkDescInput').addEventListener('keydown', (e) => { if (e.key ===
+                        'Enter') addLink(); });
+            }
+        }
+
+        // =========================================
+        // 班级管理模块
+        // =========================================
+        let audioContext = null;
+        let analyser = null;
+        let microphone = null;
+        let isMonitoring = false;
+        let animationFrame = null;
+
+        function renderClassModule() {
+            const tasksHtml = renderTaskList('class', '📋 班级待办');
+
+            // 分贝检测
+            const decibelHtml = `
+                <div class="card">
+                    <div class="card-title">🎤 早读分贝检测 <span class="badge">实时监测</span></div>
+                    <div class="decibel-meter">
+                        <div class="decibel-value" id="decibelValue">0<span class="decibel-unit"> dB</span></div>
+                        <div class="decibel-status" id="decibelStatus">🔇 未开始监测</div>
+                        <div class="decibel-bar-container">
+                            <div class="decibel-bar" id="decibelBar"></div>
+                        </div>
+                        <div class="decibel-buttons">
+                            <button class="btn-start" id="btnStartMonitor">🎙️ 开始监测</button>
+                            <button class="btn-stop" id="btnStopMonitor" disabled>⏹️ 停止监测</button>
+                        </div>
+                        <p style="font-size:11px;color:#999;margin-top:12px;">💡 开启麦克风权限后，实时检测教室声音分贝</p>
+                    </div>
+                </div>
+            `;
+
+            // 心愿瓶
+            const wishHtml = `
+                <div class="card">
+                    <div class="card-title">🍀 班级心愿瓶 <span class="badge">${appData.stars} ⭐</span></div>
+                    <div class="wish-bottle-container">
+                        <div class="wish-star-display">
+                            <div class="star-count">${appData.stars} ⭐</div>
+                            <div class="star-label">当前星星总数</div>
+                            <button class="btn-add-star" id="btnAddStar">➕ 获得星星</button>
+                        </div>
+                        <div class="wish-bottles" id="wishBottles">
+            `;
+            appData.wishes.forEach(wish => {
+                const progress = Math.min(100, Math.round((appData.stars / wish.target) * 100));
+                const unlocked = appData.stars >= wish.target;
+                wishHtml += `
+                    <div class="wish-bottle ${unlocked ? 'unlocked' : ''}" data-wish-id="${wish.id}" title="${unlocked ? '已解锁！' : '还需 ' + (wish.target - appData.stars) + ' 星'}">
+                        ${unlocked ? '<span class="unlock-badge">✨已解锁</span>' : ''}
+                        <span class="bottle-emoji">${unlocked ? '🏆' : wish.icon}</span>
+                        <span class="wish-name">${wish.name}</span>
+                        <span class="wish-progress">${appData.stars}/${wish.target} 星</span>
+                        <div class="wish-progress-bar">
+                            <div class="wish-progress-bar-fill" style="width:${progress}%;"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            wishHtml += `</div></div></div>`;
+
+            return decibelHtml + wishHtml + tasksHtml;
+        }
+
+        function bindClassEvents() {
+            // 分贝检测
+            const btnStart = document.getElementById('btnStartMonitor');
+            const btnStop = document.getElementById('btnStopMonitor');
+            const decibelValue = document.getElementById('decibelValue');
+            const decibelBar = document.getElementById('decibelBar');
+            const decibelStatus = document.getElementById('decibelStatus');
+
+            if (btnStart && btnStop) {
+                btnStart.addEventListener('click', async () => {
+                    try {
+                        if (!audioContext) {
+                            audioContext = new(window.AudioContext || window.webkitAudioContext)();
+                            analyser = audioContext.createAnalyser();
+                            analyser.fftSize = 512;
+                        }
+                        if (!microphone) {
+                            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                            microphone = audioContext.createMediaStreamSource(stream);
+                            microphone.connect(analyser);
+                        }
+                        if (audioContext.state === 'suspended') await audioContext.resume();
+                        isMonitoring = true;
+                        btnStart.disabled = true;
+                        btnStop.disabled = false;
+                        decibelStatus.textContent = '🎙️ 正在监测中...';
+                        monitorDecibels();
+                    } catch (err) {
+                        alert('无法访问麦克风，请检查权限设置。\n' + err.message);
+                    }
+                });
+
+                btnStop.addEventListener('click', () => {
+                    isMonitoring = false;
+                    btnStart.disabled = false;
+                    btnStop.disabled = true;
+                    decibelStatus.textContent = '🔇 已停止监测';
+                    if (animationFrame) cancelAnimationFrame(animationFrame);
+                    if (microphone) {
+                        microphone.disconnect();
+                        microphone = null;
+                    }
+                    decibelValue.innerHTML = '0<span class="decibel-unit"> dB</span>';
+                    decibelBar.style.width = '0%';
+                });
+            }
+
+            function monitorDecibels() {
+                if (!isMonitoring || !analyser) return;
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+                analyser.getByteTimeDomainData(dataArray);
+                let sum = 0;
+                for (let i = 0; i < dataArray.length; i++) {
+                    const val = (dataArray[i] - 128) / 128;
+                    sum += val * val;
+                }
+                const rms = Math.sqrt(sum / dataArray.length);
+                const db = Math.max(0, Math.round(20 * Math.log10(rms + 0.0001) + 90));
+                const displayDb = Math.min(120, db);
+                decibelValue.innerHTML = displayDb + '<span class="decibel-unit"> dB</span>';
+                decibelBar.style.width = Math.min(100, displayDb) + '%';
+                if (displayDb > 80) {
+                    decibelStatus.textContent = '🔊 声音很大！同学们很活跃！';
+                } else if (displayDb > 60) {
+                    decibelStatus.textContent = '📢 声音适中，早读状态良好';
+                } else if (displayDb > 40) {
+                    decibelStatus.textContent = '🔉 声音较小，可以鼓励学生大声朗读';
+                } else {
+                    decibelStatus.textContent = '🔇 非常安静';
+                }
+                animationFrame = requestAnimationFrame(monitorDecibels);
+            }
+
+            // 心愿瓶 - 加星星
+            const addStarBtn = document.getElementById('btnAddStar');
+            if (addStarBtn) {
+                addStarBtn.addEventListener('click', () => {
+                    appData.stars += 1;
+                    // 检查解锁
+                    const newlyUnlocked = appData.wishes.filter(w => w.target === appData.stars);
+                    if (newlyUnlocked.length > 0) {
+                        alert(`🎉 太棒了！解锁心愿：${newlyUnlocked.map(w=>w.name).join('、')}`);
+                    }
+                    saveData();
+                    renderContent();
+                });
+            }
+            // 心愿瓶点击
+            const bottles = document.getElementById('wishBottles');
+            if (bottles) {
+                bottles.querySelectorAll('.wish-bottle').forEach(bottle => {
+                    bottle.addEventListener('click', () => {
+                        const wishId = bottle.dataset.wishId;
+                        const wish = appData.wishes.find(w => w.id === wishId);
+                        if (wish) {
+                            const unlocked = appData.stars >= wish.target;
+                            alert(
+                                `${wish.icon} ${wish.name}\n目标：${wish.target} 星\n当前：${appData.stars} 星\n${unlocked ? '✨ 已解锁！' : '还需 ' + (wish.target - appData.stars) + ' 星'}`);
+                        }
+                    });
+                });
+            }
+        }
+
+        // =========================================
+        // 作业提效模块
+        // =========================================
+        function renderHomeworkModule() {
+            const tasksHtml = renderTaskList('homework', '📋 作业待办');
+            const extraHtml = `
+                <div class="card">
+                    <div class="card-title">📊 作业统计</div>
+                    <div class="countdown-grid" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));">
+                        <div class="countdown-item">
+                            <div class="number" style="font-size:28px;">${appData.tasks.homework ? appData.tasks.homework.filter(t=>t.done).length : 0}</div>
+                            <div class="label">已完成事项</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="number" style="font-size:28px;">${appData.tasks.homework ? appData.tasks.homework.filter(t=>!t.done).length : 0}</div>
+                            <div class="label">待完成事项</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="number" style="font-size:28px;">${appData.students ? appData.students.length : 0}</div>
+                            <div class="label">学生总数</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return extraHtml + tasksHtml;
+        }
+
+        function bindHomeworkEvents() {}
+
+        // =========================================
+        // 学生信息模块
+        // =========================================
+        function renderStudentsModule() {
+            const tasksHtml = renderTaskList('students', '📋 学生事务');
+            let studentsHtml = `
+                <div class="card">
+                    <div class="card-title">👥 学生名单 <span class="badge">${appData.students.length}人</span></div>
+                    <div class="student-grid" id="studentGrid">
+            `;
+            appData.students.forEach((student, idx) => {
+                studentsHtml += `
+                    <div class="student-tag" data-student-id="${student.id}">
+                        <span class="st-index">${idx+1}</span>
+                        <span class="st-name">${student.name}</span>
+                        <button class="st-del" data-student-id="${student.id}" title="删除">✕</button>
+                    </div>
+                `;
+            });
+            studentsHtml += `</div>
+                <div class="student-add-row">
+                    <input type="text" id="studentNameInput" placeholder="输入学生姓名..." maxlength="20">
+                    <button id="studentAddBtn">➕ 添加学生</button>
+                </div>
+                <p style="font-size:11px;color:#999;margin-top:8px;">💡 悬停学生标签可删除 | 共${appData.students.length}名学生</p>
+            </div>`;
+            return studentsHtml + tasksHtml;
+        }
+
+        function bindStudentsEvents() {
+            const grid = document.getElementById('studentGrid');
+            if (grid) {
+                grid.querySelectorAll('.st-del').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const sid = btn.dataset.studentId;
+                        const student = appData.students.find(s => s.id === sid);
+                        if (student && confirm(`确定删除学生「${student.name}」吗？`)) {
+                            appData.students = appData.students.filter(s => s.id !== sid);
+                            saveData();
+                            renderContent();
+                        }
+                    });
+                });
+                grid.querySelectorAll('.student-tag').forEach(tag => {
+                    tag.addEventListener('click', (e) => {
+                        if (e.target.closest('.st-del')) return;
+                        const sid = tag.dataset.studentId;
+                        const student = appData.students.find(s => s.id === sid);
+                        if (student) {
+                            const newName = prompt('修改学生姓名：', student.name);
+                            if (newName && newName.trim()) {
+                                student.name = newName.trim();
+                                saveData();
+                                renderContent();
+                            }
+                        }
+                    });
+                });
+            }
+            const addBtn = document.getElementById('studentAddBtn');
+            if (addBtn) {
+                const addStudent = () => {
+                    const input = document.getElementById('studentNameInput');
+                    const val = input.value.trim();
+                    if (val) {
+                        appData.students.push({ id: generateId(), name: val });
+                        input.value = '';
+                        saveData();
+                        renderContent();
+                    } else {
+                        alert('请输入学生姓名');
+                    }
+                };
+                addBtn.addEventListener('click', addStudent);
+                document.getElementById('studentNameInput').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') addStudent();
+                });
+            }
+        }
+
+        // =========================================
+        // 家校沟通模块
+        // =========================================
+        function renderCommunicationModule() {
+            const tasksHtml = renderTaskList('communication', '📋 沟通待办');
+            let commHtml = `
+                <div class="card">
+                    <div class="card-title">💬 家校沟通记录 <span class="badge">${appData.commRecords.length}条</span></div>
+                    <div id="commList">
+            `;
+            appData.commRecords.forEach(rec => {
+                commHtml += `
+                    <div class="comm-record" data-comm-id="${rec.id}">
+                        <div class="comm-top">
+                            <span class="comm-student">👤 ${rec.student}</span>
+                            <span>${rec.date}</span>
+                            <button class="comm-del" data-comm-id="${rec.id}" title="删除">✕</button>
+                        </div>
+                        <div class="comm-content">${rec.content}</div>
+                    </div>
+                `;
+            });
+            commHtml += `</div>
+                <div class="task-add-row" style="margin-top:12px;">
+                    <input type="text" id="commStudentInput" placeholder="学生姓名" maxlength="20">
+                    <input type="text" id="commContentInput" placeholder="沟通内容..." maxlength="200">
+                    <button id="commAddBtn">➕ 添加记录</button>
+                </div>
+            </div>`;
+            return commHtml + tasksHtml;
+        }
+
+        function bindCommEvents() {
+            const list = document.getElementById('commList');
+            if (list) {
+                list.querySelectorAll('.comm-del').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const cid = btn.dataset.commId;
+                        if (confirm('确定删除这条沟通记录吗？')) {
+                            appData.commRecords = appData.commRecords.filter(r => r.id !== cid);
+                            saveData();
+                            renderContent();
+                        }
+                    });
+                });
+                list.querySelectorAll('.comm-record').forEach(rec => {
+                    rec.addEventListener('click', (e) => {
+                        if (e.target.closest('.comm-del')) return;
+                        const cid = rec.dataset.commId;
+                        const record = appData.commRecords.find(r => r.id === cid);
+                        if (record) {
+                            alert(`👤 ${record.student}\n📅 ${record.date}\n📝 ${record.content}`);
+                        }
+                    });
+                });
+            }
+            const addBtn = document.getElementById('commAddBtn');
+            if (addBtn) {
+                const addComm = () => {
+                    const student = document.getElementById('commStudentInput').value.trim();
+                    const content = document.getElementById('commContentInput').value.trim();
+                    if (student && content) {
+                        appData.commRecords.push({
+                            id: generateId(),
+                            student,
+                            date: new Date().toISOString().split('T')[0],
+                            content
+                        });
+                        saveData();
+                        renderContent();
+                    } else {
+                        alert('请填写学生姓名和沟通内容');
+                    }
+                };
+                addBtn.addEventListener('click', addComm);
+                document.getElementById('commStudentInput').addEventListener('keydown', (e) => { if (e.key ===
+                        'Enter') addComm(); });
+                document.getElementById('commContentInput').addEventListener('keydown', (e) => { if (e.key ===
+                        'Enter') addComm(); });
+            }
+        }
+
+        // =========================================
+        // 荣誉登记模块
+        // =========================================
+        function renderHonorModule() {
+            const tasksHtml = renderTaskList('honor', '📋 荣誉待办');
+            let honorHtml = `
+                <div class="card">
+                    <div class="card-title">🏆 荣誉登记 <span class="badge">${appData.honors.length}项</span></div>
+                    <div id="honorList">
+            `;
+            appData.honors.forEach(honor => {
+                honorHtml += `
+                    <div class="honor-item" data-honor-id="${honor.id}">
+                        <span class="honor-icon">${honor.icon || '🏅'}</span>
+                        <span class="honor-info">
+                            <span class="honor-name">${honor.name}</span><br>
+                            <span class="honor-desc">${honor.desc || ''}</span>
+                        </span>
+                        <button class="honor-del" data-honor-id="${honor.id}" title="删除">✕</button>
+                    </div>
+                `;
+            });
+            honorHtml += `</div>
+                <div class="task-add-row" style="margin-top:12px;">
+                    <input type="text" id="honorNameInput" placeholder="荣誉名称" maxlength="30">
+                    <input type="text" id="honorDescInput" placeholder="描述（可选）" maxlength="100">
+                    <button id="honorAddBtn">➕ 添加荣誉</button>
+                </div>
+            </div>`;
+            return honorHtml + tasksHtml;
+        }
+
+        function bindHonorEvents() {
+            const list = document.getElementById('honorList');
+            if (list) {
+                list.querySelectorAll('.honor-del').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const hid = btn.dataset.honorId;
+                        if (confirm('确定删除这条荣誉记录吗？')) {
+                            appData.honors = appData.honors.filter(h => h.id !== hid);
+                            saveData();
+                            renderContent();
+                        }
+                    });
+                });
+            }
+            const addBtn = document.getElementById('honorAddBtn');
+            if (addBtn) {
+                const addHonor = () => {
+                    const name = document.getElementById('honorNameInput').value.trim();
+                    const desc = document.getElementById('honorDescInput').value.trim();
+                    if (name) {
+                        appData.honors.push({ id: generateId(), name, desc, icon: '🏅' });
+                        saveData();
+                        renderContent();
+                    } else {
+                        alert('请输入荣誉名称');
+                    }
+                };
+                addBtn.addEventListener('click', addHonor);
+                document.getElementById('honorNameInput').addEventListener('keydown', (e) => { if (e.key ===
+                        'Enter') addHonor(); });
+                document.getElementById('honorDescInput').addEventListener('keydown', (e) => { if (e.key ===
+                        'Enter') addHonor(); });
+            }
+        }
+
+        // =========================================
+        // 初始化
+        // =========================================
+        function init() {
+            // 确保所有模块都有tasks数组
+            appData.modules.forEach(mod => {
+                if (!appData.tasks[mod.id]) appData.tasks[mod.id] = [];
+            });
+            saveData();
+            renderAll();
+        }
+
+        // 清理音频资源
+        window.addEventListener('beforeunload', () => {
+            if (isMonitoring) {
+                isMonitoring = false;
+                if (animationFrame) cancelAnimationFrame(animationFrame);
+                if (microphone) microphone.disconnect();
+                if (audioContext) audioContext.close();
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>
